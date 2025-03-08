@@ -57,6 +57,18 @@ Generate an application key:
 php artisan migrate
 ```
 
+Generate dummy data:
+
+```bash
+php artisan db:seed
+```
+
+Lunch the project
+
+```bash
+php artisan serve
+```
+
 ### Features Walkthrough
 
     Features Walkthrough
@@ -79,14 +91,14 @@ Cart Actions
 
 - Remove from Cart: Users can remove items from the cart using a simple "X" button.
 
-Place Order: Once users are ready, they can place an order by clicking the "Order Now" button, which you can later integrate with your order processing logic.
+- Place Order: Once users are ready, they can place an order by clicking the "Order Now" button, which you can later integrate with your order processing logic.
 
 ## Components Used
 - CartIcon Component: Displays the number of items in the cart dynamically.
 - CartPage Component: Displays all items in the cart with options to remove and place orders.
-Cart Header Component: A reusable header component that displays success/error messages and cart-related information.
-Livewire Event Handling
-The CartIcon component listens to the cart session and updates dynamically when items are added or removed. Livewire events like cartUpdated can be dispatched to handle updates to the cart's contents.
+- Cart Header Component: A reusable header component that displays success/error messages and cart-related information.
+- Livewire Event Handling
+- The CartIcon component listens to the cart session and updates dynamically when items are added or removed. Livewire events like cartUpdated can be dispatched to handle updates to the cart's contents.
 
 ## Usage
     Adding Products to the Cart
