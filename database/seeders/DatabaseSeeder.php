@@ -32,6 +32,6 @@ class DatabaseSeeder extends Seeder
          });
  
          // Create 20 orders
-         Order::factory(20)->create();
+        //  Order::factory(20)->create();
     }
 }

@@ -2,14 +2,20 @@
 
 namespace App\Livewire;
 
+use App\Models\Order;
 use Livewire\Component;
+use App\Models\OrderItem;
 use App\Enums\OrderStatus;
 
 class Cart extends Component
 {
     public $cart = [];
 
+    public $customer_name;
+    public $customer_email;
+    
     protected $listeners = ['cartUpdated' => 'loadCart'];
+    
 
     public function mount()
     {

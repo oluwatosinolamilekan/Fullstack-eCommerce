@@ -56,23 +56,29 @@
         @endif
 
         <!-- Product Listing -->
-        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            @foreach($products as $product)
-                <div class="border p-4 rounded-lg shadow-lg">
-                    <img src="{{ $product->image }}" alt="{{ $product->name }}" class="w-full h-40 object-cover mb-2">
-                    <h2 class="text-lg font-bold">{{ $product->name }}</h2>
-                    <p class="text-gray-600">${{ number_format($product->price, 2) }}</p>
-                    <button wire:click="addToCart({{ $product->id }})"
-                        class="mt-2 bg-blue-500 text-white px-4 py-2 rounded">
-                        Add to Cart
-                    </button>
-                </div>
-            @endforeach
-        </div>
+        @if ($products->isEmpty())
+            <div class="text-center text-gray-500 text-lg font-semibold">
+                No products available.
+            </div>
+        @else
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                @foreach($products as $product)
+                    <div class="border p-4 rounded-lg shadow-lg">
+                        <img src="{{ $product->image }}" alt="{{ $product->name }}" class="w-full h-40 object-cover mb-2">
+                        <h2 class="text-lg font-bold">{{ $product->name }}</h2>
+                        <p class="text-gray-600">${{ number_format($product->price, 2) }}</p>
+                        <button wire:click="addToCart({{ $product->id }})"
+                            class="mt-2 bg-blue-500 text-white px-4 py-2 rounded">
+                            Add to Cart
+                        </button>
+                    </div>
+                @endforeach
+            </div>
 
-        <!-- Pagination -->
-        <div class="mt-6">
-            {{ $products->links() }}
-        </div>
+            <!-- Pagination -->
+            <div class="mt-6">
+                {{ $products->links() }}
+            </div>
+        @endif
     </div>
 </div>
