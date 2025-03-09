@@ -63,6 +63,12 @@ Generate dummy data:
 php artisan db:seed
 ```
 
+Generate storage link:
+
+```bash
+php artisan storage:link
+```
+
 Lunch the project
 
 ```bash

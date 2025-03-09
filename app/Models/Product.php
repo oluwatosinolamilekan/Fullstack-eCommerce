@@ -17,6 +17,12 @@ class Product extends Model
         return $this->belongsToMany(Category::class);
     }
 
+    public function children_categories()
+    {
+        return $this->belongsToMany(Category::class)->whereNotNull('parent_id');
+    }
+
+
     public function orders()
     {
         return $this->belongsToMany(Order::class)->withPivot('price');

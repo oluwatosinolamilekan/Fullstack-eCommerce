@@ -7,7 +7,9 @@ use App\Models\User;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\OrderItem;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -16,22 +18,27 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
 
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        User::factory()->create([
+            'name' => 'Test Admin',
+            'email' => 'admin@admin.com',
+            'password' => Hash::make('admin'),
+        ]);
+
+        // seed 10 users to be a customer..
+        User::factory(10)->create();
 
         // Create 10 categories
-         $categories = Category::factory(10)->create();
+        $categories = Category::factory(10)->create();
 
          // Create 50 products and attach random categories
-         Product::factory(50)->create()->each(function ($product) use ($categories) {
-             $product->categories()->attach($categories->random(rand(1, 3))->pluck('id'));
-         });
+        Product::factory(50)->create()->each(function ($product) use ($categories) {
+            $product->categories()->attach($categories->random(rand(1, 3))->pluck('id'));
+        });
  
-         // Create 20 orders
-        //  Order::factory(20)->create();
+       Order::factory()
+       ->count(20)
+        ->has(OrderItem::factory()->count(3), 'items') // Use 'items' instead of 'orderItem'
+        ->create();
     }
 }

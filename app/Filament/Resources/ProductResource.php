@@ -2,16 +2,18 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ProductResource\Pages;
-use App\Filament\Resources\ProductResource\RelationManagers;
-use App\Models\Product;
+use Carbon\Carbon;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use App\Models\Product;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\ProductResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\ProductResource\RelationManagers;
 
 class ProductResource extends Resource
 {
@@ -25,10 +27,17 @@ class ProductResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')->required(),
                 Forms\Components\TextInput::make('price')->numeric()->required(),
-                Forms\Components\FileUpload::make('image'),
-                Forms\Components\Select::make('categories')
-                    ->relationship('categories', 'name')
-                    ->multiple(),
+                Forms\Components\FileUpload::make('image')
+                    ->disk('public') // Store in public disk
+                    ->directory('products') // Save to storage/app/public/products
+                    ->image()
+                    ->nullable()
+                    ->label('Product Image')
+                    ->getUploadedFileNameForStorageUsing(fn ($file) => 
+                        Carbon::now()->format('YmdHisv') . '-' . Str::random(5) . '.' . $file->getClientOriginalExtension()
+                    ),
+                Forms\Components\Select::make('children_categories')
+                    ->relationship('children_categories', 'name'),
             ]);
     }
 
@@ -37,7 +46,14 @@ class ProductResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\ImageColumn::make('image'),
+                Tables\Columns\ImageColumn::make('image')
+                ->disk('public') // Load from storage
+                ->default(fn ($record) => $record->image 
+                    ? asset("storage/{$record->image}") // If image exists, load from storage
+                    : 'https://picsum.photos/400/300?random=' . rand(1, 1000) // Else, load placeholder
+                )
+                ->label('Product Image'),
+
                 Tables\Columns\TextColumn::make('price')->sortable(),
                 Tables\Columns\TextColumn::make('categories.name')->label('Categories'),
             ])

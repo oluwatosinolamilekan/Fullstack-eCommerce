@@ -4,7 +4,9 @@ namespace Database\Factories;
 
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\OrderItem;
 use App\Enums\OrderStatus;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -22,10 +24,7 @@ class OrderFactory extends Factory
     public function definition(): array
     {
         return [
-            'customer_name' => $this->faker->name,
-            'customer_email' => $this->faker->safeEmail,
-            'product_id' => Product::inRandomOrder()->first()->id ?? Product::factory(),
-            'quantity' => $this->faker->numberBetween(1, 5),
+            'user_id' => User::factory(),
             'status' => $this->faker->randomElement(OrderStatus::cases()), // ✅ Enum values dynamically
         ];
     }

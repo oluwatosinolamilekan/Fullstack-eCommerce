@@ -1,15 +1,32 @@
 <div>
-    <!-- Navbar -->
+  
     <nav class="bg-gray-800 p-4 text-white flex justify-between">
-        <a href="#" class="text-lg font-bold">eCommerce</a>
+        <a href="{{route('home')}}" class="text-lg font-bold">eCommerce</a>
 
         <a href="{{ route('cart') }}" class="relative flex items-center">
             🛒 Cart
-            <span class="ml-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                @livewire('cart-icon')
-            </span>
+            @livewire('cart-icon')  
         </a>
+
+         <!-- Auth Links or User Info -->
+         @if(Auth::check())
+         <!-- If user is authenticated -->
+         <div class="flex items-center space-x-4">
+             <span class="text-white">Hello, {{ Auth::user()->name }}</span>
+             <form action="#" method="POST">
+                 @csrf
+                 <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded">Logout</button>
+             </form>
+         </div>
+     @else
+         <!-- If user is not authenticated -->
+         <div class="flex items-center space-x-4">
+             <a href="{{ route('login') }}" class="bg-blue-500 text-white px-4 py-2 rounded">Login</a>
+             <a href="{{ route('register') }}" class="bg-green-500 text-white px-4 py-2 rounded">Register</a>
+         </div>
+     @endif
     </nav>
+    
 
     <div class="container mx-auto p-6">
         <h1 class="text-3xl font-bold mb-4">Products</h1>
@@ -55,30 +72,36 @@
             </div>
         @endif
 
-        <!-- Product Listing -->
         @if ($products->isEmpty())
-            <div class="text-center text-gray-500 text-lg font-semibold">
-                No products available.
-            </div>
-        @else
-            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                @foreach($products as $product)
-                    <div class="border p-4 rounded-lg shadow-lg">
-                        <img src="{{ $product->image }}" alt="{{ $product->name }}" class="w-full h-40 object-cover mb-2">
-                        <h2 class="text-lg font-bold">{{ $product->name }}</h2>
-                        <p class="text-gray-600">${{ number_format($product->price, 2) }}</p>
-                        <button wire:click="addToCart({{ $product->id }})"
-                            class="mt-2 bg-blue-500 text-white px-4 py-2 rounded">
-                            Add to Cart
-                        </button>
-                    </div>
-                @endforeach
-            </div>
+        <div class="text-center text-gray-500 text-lg font-semibold">
+            No products available.
+        </div>
+    @else
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            @foreach($products as $product)
+                <div class="border p-4 rounded-lg shadow-lg">
+                    <img src="{{ Str::startsWith($product->image, 'http') ? $product->image : asset('storage/products/' . basename($product->image)) }}" 
+                         alt="{{ $product->name }}" 
+                         class="w-full h-40 object-cover mb-2">
+                         {{-- <img src="{{ Str::startsWith($product->image, 'http') ? $product->image : asset('storage/products/' . basename($product->image)) }}" 
+     alt="{{ $product->name }}" 
+     class="w-full h-40 object-cover mb-2"> --}}
 
-            <!-- Pagination -->
-            <div class="mt-6">
-                {{ $products->links() }}
-            </div>
-        @endif
+                    <h2 class="text-lg font-bold">{{ $product->name }}</h2>
+                    <p class="text-gray-600">${{ number_format($product->price, 2) }}</p>
+                    <button wire:click="addToCart({{ $product->id }})"
+                        class="mt-2 bg-blue-500 text-white px-4 py-2 rounded">
+                        Add to Cart
+                    </button>
+                </div>
+            @endforeach
+        </div>
+    
+        <!-- Pagination -->
+        <div class="mt-6">
+            {{ $products->links() }}
+        </div>
+    @endif
+    
     </div>
 </div>

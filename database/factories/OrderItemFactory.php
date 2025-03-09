@@ -2,6 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Order;
+use App\Models\Product;
+use App\Models\OrderItem;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class OrderItemFactory extends Factory
 {
+    protected $model = OrderItem::class;
     /**
      * Define the model's default state.
      *
@@ -17,7 +21,11 @@ class OrderItemFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'order_id' => Order::factory(),
+            'product_id' => Product::factory(),
+            'name' => $this->faker->word,
+            'price' => $this->faker->randomFloat(2, 10, 200),
+            'quantity' => $this->faker->numberBetween(1, 5),
         ];
     }
 }

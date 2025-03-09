@@ -40,14 +40,22 @@ class SubcategoryResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(Category::whereNotNull('parent_id'))
             ->columns([
-                TextColumn::make('name')->sortable()->searchable(),
-                TextColumn::make('parent.name')->label('Parent Category')->sortable(),
+                TextColumn::make('name')
+                    ->sortable()
+                    ->searchable()
+                    ->label('Subcategory Name'),
+
+                TextColumn::make('parent.name')
+                    ->label('Parent Category')
+                    ->sortable(),
+
             ])
             ->filters([
                 SelectFilter::make('parent_id')
                 ->label('Filter by Parent Category')
-                ->options(Category::whereNull('parent_id')->pluck('name', 'id')),
+                ->options(Category::whereNotNull('parent_id')->pluck('name', 'id')),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

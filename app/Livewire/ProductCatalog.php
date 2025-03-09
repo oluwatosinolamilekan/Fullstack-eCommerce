@@ -47,6 +47,11 @@ class ProductCatalog extends Component
 
     public function orderProduct($productId)
     {
+        if (!auth()->check()) {
+            session()->flash('error', 'You must be logged in to place an order.');
+            return;
+        }
+
         $product = Product::find($productId);
 
         if (!$product) {
@@ -54,8 +59,6 @@ class ProductCatalog extends Component
             return;
         }
 
-        // Here, you can implement your order logic
-        // Example: Adding the product to an order session or database
         session()->push('cart', $productId); // Simple example
 
         session()->flash('success', "{$product->name} has been added to your cart!");
@@ -63,6 +66,11 @@ class ProductCatalog extends Component
 
     public function addToCart($productId)
     {
+        if (!auth()->check()) {
+            session()->flash('error', 'You must be logged in to add items to the cart.');
+            return;
+        }
+
         $product = Product::findOrFail($productId);
         $cart = session()->get('cart', []);
 
@@ -84,6 +92,13 @@ class ProductCatalog extends Component
 
     public function removeFromCart($productId)
     {
+        if (!auth()->check()) {
+            return redirect()->route('login');
+            session()->flash('error', 'You must be logged in to add items to the cart.');
+            return;
+        }
+
+
         $cart = session()->get('cart', []);
     
         if (isset($cart[$productId])) {
@@ -96,6 +111,12 @@ class ProductCatalog extends Component
 
     public function placeOrder()
     {
+        if (!auth()->check()) {
+            return redirect()->route('login');
+            session()->flash('error', 'You must be logged in to add items to the cart.');
+            return;
+        }
+
         $cart = session()->get('cart', []);
 
         if (empty($cart)) {
@@ -136,12 +157,6 @@ class ProductCatalog extends Component
         })
         ->orderBy($this->sortBy, $this->sortDirection)
         ->paginate(10);
-
-        // $products = Product::query()
-        // ->when($this->search, fn($query) => $query->where('name', 'like', "%{$this->search}%"))
-        // ->when($this->category, fn($query) => $query->whereHas('categories', fn($q) => $q->where('id', $this->category)))
-        // ->orderBy($this->sortBy, $this->sortDirection)
-        // ->paginate(10);
 
         $categories = Category::whereNotNull('parent_id')->get();
 

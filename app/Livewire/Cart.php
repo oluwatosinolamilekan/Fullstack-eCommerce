@@ -43,14 +43,6 @@ class Cart extends Component
 
     public function placeOrder()
     {
-        // if (count($this->cart) > 0) {
-
-            
-        //     // Save order to database (Example)
-        //     session()->forget('cart');
-        //     $this->dispatch('cartUpdated'); 
-        //     session()->flash('success', 'Your order has been placed successfully!');
-        // }
 
         $this->validate([
             'customer_name' => 'required|string|max:255',
@@ -80,13 +72,10 @@ class Cart extends Component
             ]);
         }
 
-        // Clear the cart after placing the order
         session()->forget('cart');
 
-        // Provide feedback to the user
         session()->flash('success', 'Your order has been placed successfully!');
 
-        // Dispatch event for cart updated (if needed)
         $this->dispatch('cartUpdated');
     }
 
