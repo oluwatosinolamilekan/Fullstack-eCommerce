@@ -28,16 +28,16 @@ class ProductResource extends Resource
                 Forms\Components\TextInput::make('name')->required(),
                 Forms\Components\TextInput::make('price')->numeric()->required(),
                 Forms\Components\FileUpload::make('image')
-                    ->disk('public') // Store in public disk
-                    ->directory('products') // Save to storage/app/public/products
+                    ->disk('public') 
+                    ->directory('products')
                     ->image()
                     ->nullable()
                     ->label('Product Image')
                     ->getUploadedFileNameForStorageUsing(fn ($file) => 
                         Carbon::now()->format('YmdHisv') . '-' . Str::random(5) . '.' . $file->getClientOriginalExtension()
                     ),
-                Forms\Components\Select::make('children_categories')
-                    ->relationship('children_categories', 'name')
+                    Forms\Components\Select::make('categories')
+                    ->relationship('categories', 'name')
                     ->label('Category'),
             ]);
     }
@@ -54,7 +54,6 @@ class ProductResource extends Resource
                     : 'https://picsum.photos/400/300?random=' . rand(1, 1000) // Else, load placeholder
                 )
                 ->label('Product Image'),
-
                 Tables\Columns\TextColumn::make('price')->sortable(),
                 Tables\Columns\TextColumn::make('categories.name')->label('Categories'),
             ])
