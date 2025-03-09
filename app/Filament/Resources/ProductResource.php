@@ -10,6 +10,7 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Filament\Resources\Resource;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\ProductResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -62,7 +63,17 @@ class ProductResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()->before(function ($record) {
+                    if ($record->items()->exists()) {
+                        Notification::make()
+                            ->title('Cannot Delete Order')
+                            ->body('This order has associated items and cannot be deleted.')
+                            ->danger()
+                            ->send();
+
+                        return false; // Prevent deletion
+                    }
+                })
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

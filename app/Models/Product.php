@@ -22,9 +22,9 @@ class Product extends Model
         return $this->belongsToMany(Category::class)->whereNotNull('parent_id');
     }
 
-
-    public function orders()
+    public function items()
     {
-        return $this->belongsToMany(Order::class)->withPivot('price');
+        return $this->hasMany(OrderItem::class, 'product_id');
     }
+
 }

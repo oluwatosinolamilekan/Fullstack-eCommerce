@@ -126,3 +126,24 @@ Cart Actions
 - Always validate and sanitize user inputs, especially when dealing with forms or user-generated content.
 - Use event listeners to keep components in sync when state changes.
 
+## Backend Login Route
+
+To access the backend, use the following route:
+
+
+### **Request Parameters:**
+| Parameter   | Type     | Description                     |
+|------------|---------|---------------------------------|
+| `email`    | string  | Registered email address       |
+| `password` | string  | User password                  |
+
+
+Admin Login URL: http://127.0.0.1:8000/admin/login
+
+### **Example Request:**
+```json
+{
+  "email": "admin@example.com",
+  "password": "admin"
+}
+
