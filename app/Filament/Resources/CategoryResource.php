@@ -28,6 +28,7 @@ class CategoryResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')->required(),
                 Forms\Components\Select::make('parent_id')
+                    ->searchable()
                     ->relationship('parent', 'name')
                     ->nullable(),
             ]);
@@ -48,7 +49,6 @@ class CategoryResource extends Resource
                 // Tables\Actions\DeleteAction::make(),
                 Tables\Actions\DeleteAction::make()->before(function ($record) {
                     if ($record->products()->count() > 0) {
-                        // Optional: Add a custom message if a category has associated products
                         throw new Exception("Category cannot be deleted because it has associated products.");
                     }
                 })

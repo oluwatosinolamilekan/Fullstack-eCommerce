@@ -37,7 +37,8 @@ class ProductResource extends Resource
                         Carbon::now()->format('YmdHisv') . '-' . Str::random(5) . '.' . $file->getClientOriginalExtension()
                     ),
                 Forms\Components\Select::make('children_categories')
-                    ->relationship('children_categories', 'name'),
+                    ->relationship('children_categories', 'name')
+                    ->label('Category'),
             ]);
     }
 
