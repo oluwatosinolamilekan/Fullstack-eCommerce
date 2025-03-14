@@ -158,7 +158,7 @@ class ProductCatalog extends Component
         ->orderBy($this->sortBy, $this->sortDirection)
         ->paginate(10);
 
-        $categories = Category::whereNotNull('parent_id')->get();
+        $categories = Category::get();
 
         return view('livewire.product-catalog', get_defined_vars());
     }

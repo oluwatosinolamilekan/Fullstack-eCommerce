@@ -3,7 +3,7 @@
 
 ## Shopping Cart Solution
 
-    This solution implements a shopping cart system using Livewire in Laravel, which dynamically updates the cart and displays the number of items in the cart with a cart icon. It also provides a fully functional cart page to review items, manage quantities, and place orders.
+This solution implements a shopping cart system using Livewire in Laravel, which dynamically updates the cart and displays the number of items in the cart with a cart icon. It also provides a fully functional cart page to review items, manage quantities, and place orders.
 
 
 ## Features
