@@ -44,10 +44,10 @@ class Cart extends Component
     public function placeOrder()
     {
 
-        $this->validate([
-            'customer_name' => 'required|string|max:255',
-            'customer_email' => 'required|email|max:255',
-        ]);
+        // $this->validate([
+        //     'customer_name' => 'required|string|max:255',
+        //     'customer_email' => 'required|email|max:255',
+        // ]);
 
         $cart = session()->get('cart', []);
 
@@ -57,8 +57,7 @@ class Cart extends Component
         }
 
         $order = Order::create([
-            'customer_name' => $this->customer_name,
-            'customer_email' => $this->customer_email,
+            'user_id' => auth()->user()->id,
             'status' => OrderStatus::PENDING->value, // Assuming OrderStatus is an Enum
         ]);
 
