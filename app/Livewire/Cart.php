@@ -44,11 +44,6 @@ class Cart extends Component
     public function placeOrder()
     {
 
-        // $this->validate([
-        //     'customer_name' => 'required|string|max:255',
-        //     'customer_email' => 'required|email|max:255',
-        // ]);
-
         $cart = session()->get('cart', []);
 
         if (empty($cart)) {
@@ -78,8 +73,41 @@ class Cart extends Component
         $this->dispatch('cartUpdated');
     }
 
+    public function increaseQuantity($productId)
+    {
+        $cart = session()->get('cart', []);
+
+        if (isset($cart[$productId])) {
+            $cart[$productId]['quantity'] += 1;
+            session()->put('cart', $cart);
+        }
+
+        $this->loadCart();
+        $this->dispatch('cartUpdated'); 
+    }
+
+    public function decreaseQuantity($productId)
+    {
+        $cart = session()->get('cart', []);
+
+        if (isset($cart[$productId])) {
+            if ($cart[$productId]['quantity'] > 1) {
+                $cart[$productId]['quantity'] -= 1;
+                session()->put('cart', $cart);
+            } else {
+                unset($cart[$productId]); // If quantity is 1 and decreased, remove item from cart
+                session()->put('cart', $cart);
+            }
+        }
+
+        $this->loadCart();
+        $this->dispatch('cartUpdated'); 
+    }
+
+
     public function render()
     {
         return view('livewire.cart');
     }
+    
 }

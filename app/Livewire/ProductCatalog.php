@@ -15,6 +15,11 @@ class ProductCatalog extends Component
     public $category = '';
     public $sortBy = 'name';
     public $sortDirection = 'asc';
+    public $showFilterModal = false; // Define the property here
+
+    // Other properties and methods
+
+    
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -43,6 +48,11 @@ class ProductCatalog extends Component
     {
         $this->reset(['search', 'category', 'sortBy', 'sortDirection']);
         $this->resetPage();
+    }
+
+    public function toggleFilterModal()
+    {
+        $this->showFilterModal = !$this->showFilterModal;
     }
 
     public function orderProduct($productId)
@@ -86,8 +96,35 @@ class ProductCatalog extends Component
         }
 
         session()->put('cart', $cart);
+        $this->cart = $cart; // Update Livewire state
         $this->dispatch('cartUpdated'); 
         session()->flash('success', 'Product added to cart!');
+    }
+
+    public function increaseQuantity($productId)
+    {
+        $cart = session()->get('cart', []);
+
+        if (isset($cart[$productId])) {
+            $cart[$productId]['quantity']++;
+        }
+
+        session()->put('cart', $cart);
+        $this->dispatch('cartUpdated'); 
+        session()->flash('success', 'Quantity increase successfully');
+    }
+
+    public function decreaseQuantity($productId)
+    {
+        $cart = session()->get('cart', []);
+
+        if (isset($cart[$productId]) && $cart[$productId]['quantity'] > 1) {
+            $cart[$productId]['quantity']--;
+        }
+
+        session()->put('cart', $cart);
+        $this->dispatch('cartUpdated'); 
+        session()->flash('error', 'Quantity decrease successfully');
     }
 
     public function removeFromCart($productId)
@@ -107,6 +144,7 @@ class ProductCatalog extends Component
         }
     
         session()->flash('success', 'Product removed from cart!');
+        $this->dispatch('cartUpdated'); 
     }
 
     public function placeOrder()
@@ -158,7 +196,12 @@ class ProductCatalog extends Component
         ->orderBy($this->sortBy, $this->sortDirection)
         ->paginate(10);
 
-        $categories = Category::get();
+        // $categories = Category::with('children')->get(); // Eager load children categories
+        $categories = Category::with(['children' => function ($query) {
+            $query->orderBy('name', 'asc'); // Sort child categories
+        }])
+        ->orderBy('name', 'asc') // Sort parent categories
+        ->get();
 
         return view('livewire.product-catalog', get_defined_vars());
     }

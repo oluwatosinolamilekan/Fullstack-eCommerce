@@ -29,7 +29,11 @@ class Login extends Component
     {
         $this->validate();
 
-        if (Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
+        if (Auth::attempt(
+            ['email' => $this->email, 
+            'password' => $this->password,
+            'role_id' => 2
+        ], $this->remember)) {
             return redirect()->intended('/');  // Redirect to the dashboard after successful login
         }
 

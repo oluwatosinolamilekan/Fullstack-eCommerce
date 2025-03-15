@@ -3,6 +3,7 @@
 namespace App\Livewire\Auth;
 
 use Livewire\Component;
+use Illuminate\Support\Facades\Auth;
 
 class Logout extends Component
 {
@@ -12,7 +13,7 @@ class Logout extends Component
         session()->invalidate(); // Invalidate session
         session()->regenerateToken(); // Regenerate CSRF token
 
-        return redirect()->route('login'); // Redirect after logout
+        return redirect()->route('home'); // Redirect after logout
     }
     
     public function render()

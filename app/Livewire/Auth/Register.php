@@ -4,6 +4,8 @@ namespace App\Livewire\Auth;
 
 use App\Models\User;
 use Livewire\Component;
+use App\Enums\UserEnums;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class Register extends Component
@@ -30,13 +32,15 @@ class Register extends Component
     {
         $this->validate();
 
-        User::create([
+       $user =  User::create([
             'name' => $this->name,
             'email' => $this->email,
             'password' => Hash::make($this->password),
+            'role_id' => UserEnums::CUSTOMER->value,
         ]);
 
-        return redirect()->route('login');  // Redirect to login after successful registration
+        Auth::login($user);
+        return redirect()->route('home')->with('success', 'Registration successful! Welcome.');
     }
 
     
