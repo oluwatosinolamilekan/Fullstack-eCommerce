@@ -1,13 +1,16 @@
 <div>
     <!-- Navbar -->
-    <nav class="bg-gray-800 p-4 text-white flex justify-between">
-        <a href="#" class="text-lg font-bold">eCommerce</a>
-
-        <a href="{{ route('cart') }}" class="relative flex items-center">
-            🛒 Cart
-            <span class="ml-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                @livewire('cart-icon')
-            </span>
-        </a>
+    <nav class="bg-gray-800 p-4 text-white flex justify-between items-center">
+        <a href="{{route('home')}}" class="text-lg font-bold">eCommerce</a>
+        <div class="flex items-center space-x-4">
+            <a href="{{ route('cart') }}" class="relative flex items-center"> 🛒 Cart @livewire('cart-icon') </a>
+            @if(Auth::check())
+            <span class="hidden sm:inline">Hello, {{ Auth::user()->name }}</span>
+            <livewire:auth.logout />
+            @else
+            <a href="{{ route('login') }}" class="bg-blue-500 text-white px-3 py-1 rounded text-sm">Login</a>
+            <a href="{{ route('register') }}" class="bg-green-500 text-white px-3 py-1 rounded text-sm">Register</a>
+            @endif
+        </div>
     </nav>
 </div>

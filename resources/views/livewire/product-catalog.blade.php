@@ -1,22 +1,7 @@
 <div>
     <div class="min-h-screen flex flex-col">
         <!-- Navbar -->
-        <nav class="bg-gray-800 p-4 text-white flex justify-between items-center">
-            <a href="{{route('home')}}" class="text-lg font-bold">eCommerce</a>
-            <div class="flex items-center space-x-4">
-                <a href="{{ route('cart') }}" class="relative flex items-center"> 🛒 Cart @livewire('cart-icon') </a>
-                @if(Auth::check())
-                <span class="hidden sm:inline">Hello, {{ Auth::user()->name }}</span>
-                <form action="{{route('logout')}}" method="POST">
-                    @csrf
-                    <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded text-sm">Logout</button>
-                </form>
-                @else
-                <a href="{{ route('login') }}" class="bg-blue-500 text-white px-3 py-1 rounded text-sm">Login</a>
-                <a href="{{ route('register') }}" class="bg-green-500 text-white px-3 py-1 rounded text-sm">Register</a>
-                @endif
-            </div>
-        </nav>
+        <livewire:navbar />
     
         <!-- Main Content -->
         <div class="container mx-auto p-4 flex flex-col md:flex-row gap-4 flex-1">
