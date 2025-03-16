@@ -23,24 +23,40 @@ class SubcategoryResource extends Resource
     protected static ?string $model = Category::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $label = 'Subcategory';
-    protected static ?string $pluralLabel = 'Subcategories';
+    protected static ?string $label = 'Parent Categories';
+    protected static ?string $pluralLabel = 'Parent Categories';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                // TextInput::make('name')
+                // ->required()
+                // ->label('Subcategory Name'),
                 TextInput::make('name')
-                ->required()
-                ->label('Subcategory Name'),
-              
+                    ->required()
+                    ->label('Subcategory Name')
+                    ->unique(ignoreRecord: true) // Ensure subcategory name is unique
+                    ->rules([
+                        function ($get) {
+                            return function (string $attribute, $value, $fail) use ($get) {
+                                $parentId = $get('parent_id');
+                                if ($parentId) {
+                                    $parentCategory = Category::find($parentId);
+                                    if ($parentCategory && $parentCategory->name === $value) {
+                                        $fail('The subcategory name cannot be the same as the parent category name.');
+                                    }
+                                }
+                            };
+                        },
+                    ]),
             ]);
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->query(Category::whereNotNull('parent_id'))
+            ->query(Category::whereNull('parent_id'))
             ->columns([
                 TextColumn::make('name')
                     ->sortable()
@@ -51,7 +67,7 @@ class SubcategoryResource extends Resource
             ->filters([
                 SelectFilter::make('parent_id')
                 ->label('Filter by Parent Category')
-                ->options(Category::whereNotNull('parent_id')->pluck('name', 'id')),
+                ->options(Category::whereNull('parent_id')->pluck('name', 'id')),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

@@ -15,15 +15,15 @@ class Category extends Model
     protected $fillable = ['name', 'parent_id'];
 
     // Optionally, you could define a custom delete method to handle cascade deletion
-    public static function boot()
-    {
-        parent::boot();
+    // public static function boot()
+    // {
+    //     parent::boot();
 
-        // Add cascade delete for products when a category is deleted
-        static::deleting(function ($category) {
-            $category->products()->detach();
-        });
-    }
+    //     // Add cascade delete for products when a category is deleted
+    //     static::deleting(function ($category) {
+    //         $category->products()->detach();
+    //     });
+    // }
 
         
     public function products()

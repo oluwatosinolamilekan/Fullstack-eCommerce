@@ -8,9 +8,10 @@ use Filament\Tables;
 use App\Models\Category;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use Filament\Resources\Resource;
+use Filament\Tables\Actions\DeleteAction;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\CategoryResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -36,22 +37,33 @@ class CategoryResource extends Resource
 
     public static function table(Table $table): Table
     {
+
         return $table
             ->columns([
                 TextColumn::make('name')->sortable()->searchable(),
                 TextColumn::make('parent.name')->label('Parent Category'),
+                TextColumn::make('products_count')
+                ->label('Product Count')
+                ->getStateUsing(function ($record) {
+                    return $record->products()->count();
+                }),
             ])
             ->filters([
             ])
             ->searchPlaceholder('Search categories...')
             ->actions([
                 Tables\Actions\EditAction::make(),
-                // Tables\Actions\DeleteAction::make(),
                 Tables\Actions\DeleteAction::make()->before(function ($record) {
                     if ($record->products()->count() > 0) {
-                        throw new Exception("Category cannot be deleted because it has associated products.");
+                        Notification::make()
+                        ->title('Category cannot be deleted because it has associated products.')
+                        ->body('This order has associated items and cannot be deleted.')
+                        ->danger()
+                        ->send();
+
+                     return false; // Prevent deletion
                     }
-                })
+                }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
