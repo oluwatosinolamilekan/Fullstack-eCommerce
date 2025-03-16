@@ -45,11 +45,7 @@ class SubcategoryResource extends Resource
                 TextColumn::make('name')
                     ->sortable()
                     ->searchable()
-                    ->label('Subcategory Name'),
-
-                TextColumn::make('parent.name')
-                    ->label('Parent Category')
-                    ->sortable(),
+                    ->label('Parent Category'),
 
             ])
             ->filters([
