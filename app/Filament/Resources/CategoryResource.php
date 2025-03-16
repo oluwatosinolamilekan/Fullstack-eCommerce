@@ -39,6 +39,7 @@ class CategoryResource extends Resource
     {
 
         return $table
+            ->query(Category::whereNotNull('parent_id'))
             ->columns([
                 TextColumn::make('name')->sortable()->searchable(),
                 TextColumn::make('parent.name')->label('Parent Category'),
