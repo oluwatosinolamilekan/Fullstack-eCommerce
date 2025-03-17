@@ -77,7 +77,7 @@ class ProductCatalog extends Component
     public function addToCart($productId)
     {
         if (!auth()->check()) {
-            session()->flash('error', 'You must be logged in to add items to the cart.');
+            $this->dispatch('showAlert', message: 'You must be logged in to add items to the cart.', type: 'error');
             return;
         }
 
@@ -98,7 +98,7 @@ class ProductCatalog extends Component
         session()->put('cart', $cart);
         $this->cart = $cart; // Update Livewire state
         $this->dispatch('cartUpdated'); 
-        session()->flash('success', 'Product added to cart!');
+        $this->dispatch('showAlert', message: 'Product added to cart!', type: 'success');
     }
 
     public function increaseQuantity($productId)
@@ -111,7 +111,7 @@ class ProductCatalog extends Component
 
         session()->put('cart', $cart);
         $this->dispatch('cartUpdated'); 
-        session()->flash('success', 'Quantity increase successfully');
+        $this->dispatch('showAlert', message: 'Quantity increase successfully', type: 'success');
     }
 
     public function decreaseQuantity($productId)
@@ -124,14 +124,14 @@ class ProductCatalog extends Component
 
         session()->put('cart', $cart);
         $this->dispatch('cartUpdated'); 
-        session()->flash('error', 'Quantity decrease successfully');
+        $this->dispatch('showAlert', message: 'Quantity decrease successfully', type: 'error');
     }
 
     public function removeFromCart($productId)
     {
         if (!auth()->check()) {
             return redirect()->route('login');
-            session()->flash('error', 'You must be logged in to add items to the cart.');
+            $this->dispatch('showAlert', message: 'You must be logged in to add items to the cart', type: 'error');
             return;
         }
 
@@ -142,23 +142,23 @@ class ProductCatalog extends Component
             unset($cart[$productId]);
             session()->put('cart', $cart);
         }
-    
-        session()->flash('success', 'Product removed from cart!');
+
         $this->dispatch('cartUpdated'); 
+        $this->dispatch('showAlert', message: 'Product removed from cart!', type: 'success');
     }
 
     public function placeOrder()
     {
         if (!auth()->check()) {
             return redirect()->route('login');
-            session()->flash('error', 'You must be logged in to add items to the cart.');
+            $this->dispatch('showAlert', message: 'You must be logged in to add items to the cart.', type: 'error');
             return;
         }
 
         $cart = session()->get('cart', []);
 
         if (empty($cart)) {
-            session()->flash('error', 'Cart is empty!');
+            $this->dispatch('showAlert', message: 'Cart is empty!', type: 'error');
             return;
         }
 
@@ -172,6 +172,7 @@ class ProductCatalog extends Component
         }
 
         session()->forget('cart');
+        $this->dispatch('showAlert', message: 'Order placed successfully!', type: 'success');
         session()->flash('success', 'Order placed successfully!');
     }
 

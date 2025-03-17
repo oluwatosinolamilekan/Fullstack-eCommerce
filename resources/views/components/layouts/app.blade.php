@@ -22,8 +22,7 @@
 
     <body class="antialiased">
         {{ $slot }}
-
-        @livewire('toaster')
+        @livewire('alert-notification')
         @livewire('notifications')
 
         @filamentScripts

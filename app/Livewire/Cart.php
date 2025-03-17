@@ -38,7 +38,7 @@ class Cart extends Component
 
         $this->loadCart();
         $this->dispatch('cartUpdated'); 
-
+        $this->dispatch('showAlert', message: 'Product removed from cart!', type: 'success');
     }
 
     public function placeOrder()
@@ -68,9 +68,8 @@ class Cart extends Component
 
         session()->forget('cart');
 
-        session()->flash('success', 'Your order has been placed successfully!');
-
         $this->dispatch('cartUpdated');
+        $this->dispatch('showAlert', message: 'Your order has been placed successfully', type: 'success');
     }
 
     public function increaseQuantity($productId)
@@ -84,6 +83,7 @@ class Cart extends Component
 
         $this->loadCart();
         $this->dispatch('cartUpdated'); 
+        $this->dispatch('showAlert', message: 'Quantity increase successfully', type: 'success');
     }
 
     public function decreaseQuantity($productId)
@@ -102,6 +102,7 @@ class Cart extends Component
 
         $this->loadCart();
         $this->dispatch('cartUpdated'); 
+        $this->dispatch('showAlert', message: 'Quantity decrease successfully', type: 'error');
     }
 
 
