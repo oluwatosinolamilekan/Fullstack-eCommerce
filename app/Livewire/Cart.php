@@ -86,24 +86,46 @@ class Cart extends Component
         $this->dispatch('showAlert', message: 'Quantity increase successfully', type: 'success');
     }
 
+    // public function decreaseQuantity($productId)
+    // {
+    //     $cart = session()->get('cart', []);
+
+    //     if (isset($cart[$productId])) {
+    //         if ($cart[$productId]['quantity'] > 1) {
+    //             $cart[$productId]['quantity'] -= 1;
+    //             session()->put('cart', $cart);
+    //         } else {
+    //             unset($cart[$productId]); // If quantity is 1 and decreased, remove item from cart
+    //             session()->put('cart', $cart);
+    //         }
+    //     }
+
+    //     $this->loadCart();
+    //     $this->dispatch('cartUpdated'); 
+    //     $this->dispatch('showAlert', message: 'Quantity decrease successfully', type: 'error');
+    // }
+    
     public function decreaseQuantity($productId)
     {
         $cart = session()->get('cart', []);
 
-        if (isset($cart[$productId])) {
-            if ($cart[$productId]['quantity'] > 1) {
-                $cart[$productId]['quantity'] -= 1;
-                session()->put('cart', $cart);
-            } else {
-                unset($cart[$productId]); // If quantity is 1 and decreased, remove item from cart
-                session()->put('cart', $cart);
-            }
+        if (!isset($cart[$productId])) {
+            $this->dispatch('showAlert', message: 'Product not found in cart!', type: 'error');
+            return;
+        }
+
+        if ($cart[$productId]['quantity'] > 1) {
+            $cart[$productId]['quantity']--;
+            session()->put('cart', $cart);
+            $this->dispatch('showAlert', message: 'Quantity decreased successfully', type: 'success');
+        } else {
+            $this->dispatch('showAlert', message: 'Quantity cannot be less than 1', type: 'warning');
         }
 
         $this->loadCart();
-        $this->dispatch('cartUpdated'); 
-        $this->dispatch('showAlert', message: 'Quantity decrease successfully', type: 'error');
+        $this->dispatch('cartUpdated');
     }
+
 
 
     public function render()

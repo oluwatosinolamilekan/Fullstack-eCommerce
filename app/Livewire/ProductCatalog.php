@@ -114,18 +114,27 @@ class ProductCatalog extends Component
         $this->dispatch('showAlert', message: 'Quantity increase successfully', type: 'success');
     }
 
+
     public function decreaseQuantity($productId)
     {
         $cart = session()->get('cart', []);
 
-        if (isset($cart[$productId]) && $cart[$productId]['quantity'] > 1) {
-            $cart[$productId]['quantity']--;
+        if (!isset($cart[$productId])) {
+            $this->dispatch('showAlert', message: 'Product not found in cart!', type: 'error');
+            return;
         }
 
-        session()->put('cart', $cart);
-        $this->dispatch('cartUpdated'); 
-        $this->dispatch('showAlert', message: 'Quantity decrease successfully', type: 'error');
+        if ($cart[$productId]['quantity'] > 1) {
+            $cart[$productId]['quantity']--;
+            session()->put('cart', $cart);
+            $this->dispatch('cartUpdated'); 
+            $this->dispatch('showAlert', message: 'Quantity decreased successfully', type: 'success');
+        } else {
+            // Prevent decreasing below 1
+            $this->dispatch('showAlert', message: 'Quantity cannot be less than 1', type: 'warning');
+        }
     }
+
 
     public function removeFromCart($productId)
     {

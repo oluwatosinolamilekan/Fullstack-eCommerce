@@ -33,7 +33,7 @@ class Login extends Component
             ['email' => $this->email, 
             'password' => $this->password,
         ], $this->remember)) {
-        $this->dispatch('showAlert', message: 'Login successfully', type: 'login');
+            $this->dispatch('showAlert', message: 'Login successfully', type: 'login');
             return redirect()->intended('/');  // Redirect to the dashboard after successful login
         }
 
