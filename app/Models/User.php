@@ -10,8 +10,9 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasName;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Filament\Panel;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser, HasName
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -60,9 +61,14 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
     }
 
-    // public function canAccessFilament(): bool
-    // {
-    //     return str_ends_with($this->email, '@yourdomain.com') && $this->hasVerifiedEmail();
-    // }
 
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
+    }
+
+    public function getFilamentName(): string
+    {
+        return is_null($this->name) ? '-' : $this->name;
+    }
 }

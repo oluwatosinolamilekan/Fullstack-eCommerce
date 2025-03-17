@@ -40,23 +40,7 @@
             <!-- Product Listings -->
             <main class="w-full md:w-3/4 p-4">
                 <h1 class="text-2xl font-bold mb-4">Products</h1>
-                @if(session()->has('success') || session()->has('error'))
-                <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show" 
-                    class="fixed top-4 right-4 max-w-xs w-full bg-white shadow-lg rounded-lg p-4 border-l-4 
-                    {{ session()->has('success') ? 'border-green-500' : 'border-red-500' }}">
-                    
-                    <div class="flex items-start">
-                        <div class="flex-1">
-                            <p class="text-sm font-medium text-gray-900">
-                                {{ session('success') ?? session('error') }}
-                            </p>
-                        </div>
-                        <button @click="show = false" class="ml-3 text-gray-500 hover:text-gray-700">
-                            ✕
-                        </button>
-                    </div>
-                </div>
-            @endif
+                
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach($products as $product)
                     @php

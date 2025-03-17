@@ -19,17 +19,7 @@ class CategoryFactory extends Factory
      */
     public function definition(): array
     {
-        // $brands = [
-        //     'Nike', 'Adidas', 'Apple', 'Samsung', 'Sony', 'Microsoft',
-        //     'Tesla', 'Coca-Cola', 'Pepsi', 'Amazon', 'Google', 'Facebook',
-        // ];
-
-
-        // return [
-        //     'name' => fake()->randomElement($brands),
-        //     'parent_id' => $this->faker->optional(0.5)->randomElement(Category::pluck('id')->toArray()), // 50% chance of having a parent category
-        // ];
-        // A list of real brands for category names
+        
         $brands = [
             'Nike',
             'Adidas',
