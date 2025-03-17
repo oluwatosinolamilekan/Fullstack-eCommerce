@@ -36,11 +36,11 @@ class Register extends Component
             'name' => $this->name,
             'email' => $this->email,
             'password' => Hash::make($this->password),
-            'role_id' => UserEnums::CUSTOMER->value,
         ]);
 
         Auth::login($user);
-        return redirect()->route('home')->with('success', 'Registration successful! Welcome.');
+        $this->dispatch('showAlert', message: 'Registration successful! Welcome.', type: 'login');
+        return redirect()->route('home');
     }
 
     

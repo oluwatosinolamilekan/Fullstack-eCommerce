@@ -32,8 +32,8 @@ class Login extends Component
         if (Auth::attempt(
             ['email' => $this->email, 
             'password' => $this->password,
-            'role_id' => 2
         ], $this->remember)) {
+        $this->dispatch('showAlert', message: 'Login successfully', type: 'login');
             return redirect()->intended('/');  // Redirect to the dashboard after successful login
         }
 

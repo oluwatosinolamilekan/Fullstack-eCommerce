@@ -12,7 +12,7 @@ class Logout extends Component
         Auth::logout();
         session()->invalidate(); // Invalidate session
         session()->regenerateToken(); // Regenerate CSRF token
-
+        $this->dispatch('showAlert', message: 'Logout successfully', type: 'login');
         return redirect()->route('home'); // Redirect after logout
     }
     
