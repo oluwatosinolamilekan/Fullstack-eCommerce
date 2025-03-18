@@ -11,6 +11,7 @@ use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\SelectColumn;
 use Illuminate\Database\Eloquent\Builder;
@@ -36,12 +37,12 @@ class OrderResource extends Resource
                 ->label('Customer'),
 
             Forms\Components\TextInput::make('customer_email')
-                ->disabled()
                 ->label('Email Address')
                 ->dehydrated(false) 
                 ->afterStateHydrated(fn ($state, callable $set, $record) => 
                     $set('customer_email', $record?->user?->email ?? '')
-                ),
+                )
+                ,
                 Forms\Components\Select::make('status')
                 ->options([
                     'pending' => 'Pending',
@@ -93,8 +94,35 @@ class OrderResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-                
+                // Tables\Actions\DeleteAction::make(),
+               
+                Tables\Actions\DeleteAction::make('delete')
+                ->label('Delete')
+                ->icon('heroicon-o-trash')
+                ->action(function (Order $order) {
+                    // Get the count of items before deletion for the modal description
+                    $itemCount = $order->items->sum('quantity');
+                    
+                    // Delete all related items first (cascade delete if not using foreign keys)
+                    $order->items()->delete(); // Delete related order items
+
+                    // Now delete the order itself
+                    $order->delete();
+                    
+                    // Send a success notification after deletion
+                    Notification::make()
+                        ->title('Order Deleted')
+                        ->body("You have successfully deleted the order and its {$itemCount} item(s).")
+                        ->success()
+                        ->send();
+                })
+                ->requiresConfirmation()  // This will show the confirmation modal
+                ->modalHeading('Delete Order')  // Customize the modal heading
+                ->modalDescription(function (Order $order) {
+                    return "Are you sure you want to delete this order with " . $order->items->sum('quantity') . " item(s)? This action cannot be undone.";
+                })
+                ->modalSubmitActionLabel('Yes, delete it')  // Label for the confirmation button
+                ->color('danger'), // Color of the action button
                 
             ])
             ->bulkActions([

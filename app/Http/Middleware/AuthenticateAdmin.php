@@ -16,10 +16,15 @@ class AuthenticateAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && Auth::user()->role_id == 2) {
-            session()->flash('error', 'Permission not granted..');
-            return redirect()->route('home'); // Redirect unauthorized users
+        // if (!Auth::check() || Auth::user()->role_id !== 1) {
+        //     session()->flash('error', 'Permission not granted..');
+        //     return redirect('/admin/login');
+        // }
+        if (!Auth::check() || Auth::user()->role_id !== 1) {
+            return redirect()->route('home')->with('error', 'Access denied.');
         }
+      
         return $next($request);
+
     }
 }

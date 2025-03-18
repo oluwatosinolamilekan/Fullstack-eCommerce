@@ -15,6 +15,8 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\ProductResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\ProductResource\RelationManagers;
+use App\Models\OrderItem;
+use Filament\Tables\Actions\DeleteAction;
 
 class ProductResource extends Resource
 {
@@ -47,7 +49,7 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('name')->sortable()->searchable(),
                 Tables\Columns\ImageColumn::make('image')
                 ->disk('public') // Load from storage
                 ->default(fn ($record) => $record->image 
@@ -55,25 +57,30 @@ class ProductResource extends Resource
                     : 'https://picsum.photos/400/300?random=' . rand(1, 1000) // Else, load placeholder
                 )
                 ->label('Product Image'),
-                Tables\Columns\TextColumn::make('price')->sortable(),
-                Tables\Columns\TextColumn::make('categories.name')->label('Categories'),
+                Tables\Columns\TextColumn::make('price')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('categories.name')
+                ->searchable()
+                ->label('Categories'),
             ])
             ->filters([
                 
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()->before(function ($record) {
+                Tables\Actions\DeleteAction::make()
+                ->before(function (DeleteAction $action, $record) {
                     if ($record->items()->exists()) {
+                        // Show notification
                         Notification::make()
-                            ->title('Cannot Delete Order')
-                            ->body('This order has associated items and cannot be deleted.')
+                            ->title('Cannot Delete Product')
+                            ->body('This product has associated order items and cannot be deleted.')
                             ->danger()
                             ->send();
 
-                        return false; // Prevent deletion
+                        $action->halt();
                     }
-                })
+                }),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

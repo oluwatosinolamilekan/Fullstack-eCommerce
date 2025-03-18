@@ -11,6 +11,7 @@ use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Tables\Actions\DeleteAction;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\CategoryResource\Pages;
@@ -54,17 +55,19 @@ class CategoryResource extends Resource
             ->searchPlaceholder('Search categories...')
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make()->before(function ($record) {
-                    if ($record->products()->count() > 0) {
+                Tables\Actions\DeleteAction::make('delete')
+                ->label('Delete')
+                ->before(function (DeleteAction $action, Category $category) {
+                    if ($category->products()->exists()) {
                         Notification::make()
-                        ->title('Category cannot be deleted because it has associated products.')
-                        ->body('This order has associated items and cannot be deleted.')
-                        ->danger()
-                        ->send();
+                            ->title('Cannot Delete Category')
+                            ->body('This category has associated products and cannot be deleted.')
+                            ->danger()
+                            ->send();
 
-                     return false; // Prevent deletion
+                        $action->halt(); // Prevent deletion
                     }
-                }),
+                })
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -9,9 +9,11 @@ use Filament\Forms\Form;
 use Filament\Tables\Table;
 use App\Models\Subcategory;
 use Filament\Resources\Resource;
+use Filament\Actions\DeleteAction;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -30,9 +32,6 @@ class SubcategoryResource extends Resource
     {
         return $form
             ->schema([
-                // TextInput::make('name')
-                // ->required()
-                // ->label('Subcategory Name'),
                 TextInput::make('name')
                     ->required()
                     ->label('Subcategory Name')
@@ -72,6 +71,18 @@ class SubcategoryResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+                // Tables\Actions\DeleteAction::make() //this isnt working...
+                // ->before(function (DeleteAction $action, Category $category) {
+                //     if ($category->children()->exists()) { // Check if the category has subcategories
+                //         Notification::make()
+                //             ->title('Cannot Delete Parent Category')
+                //             ->body('This category has associated subcategories and cannot be deleted.')
+                //             ->danger()
+                //             ->send();
+
+                //         $action->halt(); // Prevent deletion
+                //     }
+                // })
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
